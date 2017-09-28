@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<bean id="disconfMgrBean" class="com.baidu.disconf.client.DisconfMgrBean" destroy-method="destroy">
+    	<property name="scanPackage" value="com.example"/>
+	</bean>
+
+	<bean id="disconfMgrBeanSecond" class="com.baidu.disconf.client.DisconfMgrBeanSecond" init-method="init" destroy-method="destroy"/>
+	
+	<!-- 使用托管方式的disconf配置(无代码侵入, 配置更改会自动reload)-->
+	<bean id="disconfigProperties" class="com.baidu.disconf.client.addons.properties.ReloadablePropertiesFactoryBean">
+	    <property name="locations">
+	        <list>
+				<value>classpath*:config/simple.properties</value>
+				<value>classpath*:config/my-web.properties</value>
+			</list>
+	    </property>
+	</bean>
+	
+	<bean id="propertyConfigurer"  class="com.baidu.disconf.client.addons.properties.ReloadingPropertyPlaceholderConfigurer">
+	    <property name="ignoreResourceNotFound" value="true"/>
+	    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+	    <property name="propertiesArray">
+	        <list>
+	            <ref bean="disconfigProperties"/>
+	        </list>
+	    </property>
+	</bean>
+	
+</beans>
